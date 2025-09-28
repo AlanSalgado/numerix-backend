@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Dígito Manuscrito</title>
+  <style>
+    body { text-align: center; font-family: Arial; margin-top: 30px; }
+    #canvas { border: 2px solid black; cursor: crosshair; }
+    button { margin: 10px; padding: 10px 20px; }
+  </style>
+</head>
+<body>
+  <h2>Dibuja un número (0-9)</h2>
+  <canvas id="canvas" width="280" height="280"></canvas><br>
+  <button onclick="clearCanvas()">Limpiar</button>
+  <button onclick="predictDigit()">Predecir</button>
+  <h3 id="result">Predicción: </h3>
+
+  <script>
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+
+    // Fondo blanco
+    ctx.fillStyle = "white";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    let drawing = false;
+
+    canvas.addEventListener("mousedown", () => { drawing = true; });
+    canvas.addEventListener("mouseup", () => { drawing = false; ctx.beginPath(); });
+    canvas.addEventListener("mousemove", draw);
+
+    function draw(e) {
+      if (!drawing) return;
+      ctx.lineWidth = 20;
+      ctx.lineCap = "round";
+      ctx.strokeStyle = "black";
+
+      ctx.lineTo(e.offsetX, e.offsetY);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(e.offsetX, e.offsetY);
+    }
+
+    function clearCanvas() {
+      ctx.fillStyle = "white";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      document.getElementById("result").innerText = "Predicción:";
+    }
+
+    async function predictDigit() {
+      const image = canvas.toDataURL("image/png"); // base64
+
+      const response = await fetch("http://127.0.0.1:8000/api/predict/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ image: image })
+      });
+
+      const data = await response.json();
+      document.getElementById("result").innerText = "Predicción: " + (data.prediction ?? "Error");
+    }
+  </script>
+</body>
+</html>

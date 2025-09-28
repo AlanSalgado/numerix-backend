@@ -1,0 +1,1 @@
+web: gunicorn numerix_django.wsgi
