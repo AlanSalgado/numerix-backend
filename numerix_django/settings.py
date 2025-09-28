@@ -29,7 +29,7 @@ SECRET_KEY = 'django-insecure-%#=t@yv31#_xn+#+i!!5zzpi9=$aey_tfr2baa8*@q60lcn^e2
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["https://numerix-project.netlify.app"]
+ALLOWED_HOSTS = ["https://numerix-project.netlify.app", "numerix-backend.onrender.com"]
 
 
 # Application definition
